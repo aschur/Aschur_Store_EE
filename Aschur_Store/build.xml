@@ -1,0 +1,85 @@
+<project name = "Aschur_Store" default = "deploy" basedir=".">
+
+    <property name="src.dir" value="src"/>
+    <property name="out.dir" value="out\production"/>
+    <property name="jar.file.name" value="aschur_store.jar"/>
+    <property name="jar.dir" value="out\jar"/>
+    <property name="icon.path" value="gui\icons"/>
+    <property name="test.data.dir" value="testdata"/>
+    <property name="settings.file.name" value="src/Settings.txt"/>
+
+    <target name="clean">
+
+        <delete dir="${out.dir}"/>
+        <delete dir="${jar.dir}"/>
+
+    </target>
+
+    <target name="prepare" depends="clean">
+
+        <mkdir dir="${out.dir}"/>
+        <mkdir dir="${jar.dir}"/>
+
+    </target>
+
+    <target name="compile" depends="prepare">
+
+        <javac srcdir="${src.dir}" includeantruntime="true" destdir="${out.dir}">
+
+            <include name="**/*.java"/>
+        	
+        </javac>
+
+    </target>
+
+    <target name="copyResource">
+
+        <mkdir dir="${out.dir}\${icon.path}"/>
+        <copy todir="${out.dir}\${icon.path}">
+
+            <fileset dir="${src.dir}\${icon.path}"></fileset>
+
+        </copy>
+
+        <mkdir dir="${out.dir}\${test.data.dir}"/>
+        <copy todir="${out.dir}\${test.data.dir}">
+
+            <fileset dir="${src.dir}\${test.data.dir}"></fileset>
+
+        </copy>
+
+        <copy todir="${out.dir}">
+
+            <file name="${settings.file.name}"/>
+
+        </copy>
+
+    </target>
+
+    <target name="jar">
+
+        <jar destfile="${jar.dir}\${jar.file.name}">
+
+            <manifest>
+
+                <attribute name="Main-Class" value="management.Manager"/>
+                <attribute name="Class-Path" value="."/>
+
+            </manifest>
+
+            <fileset dir="${out.dir}">
+
+            </fileset>
+
+        </jar>
+
+
+    </target>
+
+    <target name="deploy" depends="compile, copyResource, jar">
+
+
+    </target>
+
+
+</project>
