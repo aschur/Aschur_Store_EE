@@ -3,7 +3,6 @@ testdata/ProductsData.txt
 10
 2
 120000
-handMode
 
 
 
