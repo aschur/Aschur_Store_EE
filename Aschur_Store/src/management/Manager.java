@@ -3,10 +3,17 @@ package management;
 import equipment.BarcodeReader;
 import equipment.CashRegister;
 import person.*;
+import gui.FormAppSettings;
 import gui.TellerWorkingPlace;
 import product.*;
 
 import javax.swing.*;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +28,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class Manager {
 
 	private static String modeDataStorage = "";
+	private static volatile Session session;
 
 	public static void main(String[] args) throws Exception {
 
@@ -42,14 +50,25 @@ public class Manager {
 			return;
 		}
 
+		if (modeDataStorage.equals("dataBase")) {
+			session = createHibernateSession();
+			if (session == null) {
+				System.out.println("failed to create hibernate session");
+				return;
+			}
+		}
+		
 		Map<String, String> settings = SettingsLoader.getSettings();
 
 		int countConsumers = 0;
 		try {
 			countConsumers = Integer.parseInt(settings.get("countConsumers"));
 		} catch (Exception e) {
+
+		}
+		
+		if (countConsumers == 0) {
 			System.out.println("countConsumers parametr is undefined");
-			return;
 		}
 
 		int maxCountEnterStore = 0;
@@ -57,18 +76,51 @@ public class Manager {
 			maxCountEnterStore = Integer.parseInt(settings
 					.get("maxCountEnterStore"));
 		} catch (Exception e) {
-			System.out.println("maxCountEnterStore parametr is undefined");
-			return;
+
 		}
 
+		if (maxCountEnterStore == 0) {
+			System.out.println("maxCountEnterStore parametr is undefined");
+		}
+		
 		int timeWorkStore = 0;
 		try {
 			timeWorkStore = Integer.parseInt(settings.get("timeWorkStore"));
 		} catch (Exception e) {
+
+		}
+		
+		if (timeWorkStore == 0) {
 			System.out.println("timeWorkStore parametr is undefined");
-			return;
+		}
+		
+		if (countConsumers == 0 || maxCountEnterStore == 0 || timeWorkStore == 0) {
+			
+			if (modeDataStorage.equals("fileApp")) {
+				
+				System.out.println("not all parameters are defined");
+				return;
+				
+			}else{
+				
+				Thread formAppSettings = new Thread(new Runnable() {
+					public void run() {
+
+						new FormAppSettings();
+
+					}
+
+				});
+
+				SwingUtilities.invokeAndWait(formAppSettings);
+
+				return;
+	
+			}
+			
 		}
 
+		
 		ShelfOfConsumer shelfOfConsumer = new ShelfOfConsumer();
 		ProductsDataBaseOfSeller productsDataBaseOfSeller = new ProductsDataBaseOfSeller();
 		DelayProducts delayProducts = new DelayProducts();
@@ -268,5 +320,34 @@ public class Manager {
 		modeDataStorage = mode;
 
 	}
+	
+	private static Session createHibernateSession()
+	{
+		SessionFactory   sessionFactory  = null;
+		ServiceRegistry  serviceRegistry = null;
+		try {
+			try {
+				Configuration cfg = new Configuration();
+				cfg.addResource("management\\appsetting.hbm.xml");
+				cfg.configure();
+				serviceRegistry = new StandardServiceRegistryBuilder().
+						              applySettings(cfg.getProperties()).build();
+				sessionFactory = cfg.buildSessionFactory(serviceRegistry);
+			} catch (Throwable e) {
+				System.err.println("Failed to create sessionFactory object." + e);
+				throw new ExceptionInInitializerError(e);
+			}
+			session = sessionFactory.openSession();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return session;
+	}
+
+	public static Session getSession() {
+		return session;
+	}
+
+	
 
 }

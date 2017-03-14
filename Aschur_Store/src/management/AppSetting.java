@@ -3,10 +3,11 @@ package management;
 public class AppSetting {
 
 	private String name;
-	private String value;
+	private long value;
 	
-	public AppSetting(String name, String value) {
-		super();
+	public AppSetting() {}
+	
+	public AppSetting(String name, Long value) {
 		this.name = name;
 		this.value = value;
 	}
@@ -16,10 +17,10 @@ public class AppSetting {
 	private void setName(String name) {
 		this.name = name;
 	}
-	public String getValue() {
+	public long getValue() {
 		return value;
 	}
-	private void setValue(String value) {
+	private void setValue(long value) {
 		this.value = value;
 	}
 	

@@ -1,0 +1,18 @@
+<?xml version='1.0'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="management">
+
+<class name="AppSetting" table="APP_SETTING3">
+	<id name="name" column="NAME" >
+		<generator class="assigned"/>
+	</id>
+
+	<property name="value">
+		<column name="VALUE" />
+	</property>
+</class>
+
+</hibernate-mapping>

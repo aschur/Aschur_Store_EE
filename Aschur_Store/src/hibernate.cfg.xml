@@ -7,7 +7,7 @@
     <session-factory>
         <!-- Database connection settings -->
         <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;database=HibernateExample</property>
+        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;database=Aschur_Store</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">123</property>
         <!-- JDBC connection pool (use the built-in) -->
@@ -21,7 +21,7 @@
         <property name="hibernate.connection.characterEncoding">utf8</property>
         <property name="hibernate.connection.useUnicode">true</property>
 
-        <mapping class="net.common.model.Person"/>
+        <mapping class="management.AppSettings"/>
 
     </session-factory>
 </hibernate-configuration>

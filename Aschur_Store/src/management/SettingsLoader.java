@@ -2,7 +2,11 @@ package management;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.hibernate.Session;
+
 
 /**
  * Created by Aschur on 15.01.2017
@@ -165,6 +169,23 @@ public class SettingsLoader {
 
 	private static  Map<String, String> getDataBaseSettings(Map<String, String> settings) {
 		
+		Session session = Manager.getSession();
+		
+		String query = "select p from " + AppSetting.class.getSimpleName() + " p";
+			
+        @SuppressWarnings("unchecked")
+		List<AppSetting> list = (List<AppSetting>)session.createQuery(query).list();
+		
+        for (AppSetting appSetting : list) {
+			
+        	String nameSetting = appSetting.getName();
+        	String valueSetting = Long.toString(appSetting.getValue());
+        	if (settings.get(nameSetting) != null) {
+        		settings.put(nameSetting, valueSetting);
+			}
+        	
+		}
+        
 		return settings;
 		
 	}
